@@ -58,7 +58,7 @@ class Game:
 		self.scrollImg2 = pygame.image.load('./assets/img/scrollBg2.png').convert()
 
 		self.SCROLL_THRESH = 200
-		self.scroll = 0
+		self.scroll = 2
 		self.bgScroll = 0
 
 		self.sonido_salto = pygame.mixer.Sound("./assets/sound/jumpbros.ogg")
@@ -94,17 +94,27 @@ class Game:
 		image = pygame.transform.scale(img, escala)
 		image.set_colorkey((255, 255, 255))
 		rect = image.get_rect()
-		image_rect = (image, rect)
 
-		return image_rect
+		return (image, rect)
 
 
 	def dibujaScroll(self):
-		pass
+		resY = self.RESOLUCION[1]
+		self.bgScroll += self.scroll * 2
+
+		if self.bgScroll >= resY * 2:
+			self.bgScroll = 0
+
+		self.pantalla.blit(self.scrollImg1, (0, 0 + self.bgScroll))
+		self.pantalla.blit(self.scrollImg2, (0, -resY + self.bgScroll))
+		self.pantalla.blit(self.scrollImg1, (0, -resY * 2 + self.bgScroll))
+		self.pantalla.blit(self.scrollImg2, (0, -resY * 3 + self.bgScroll))
 
 
 	def update(self):
 		pygame.display.set_caption(str(int(self.reloj.get_fps())))
+		
+		self.dibujaScroll()
 		
 		pygame.display.flip()
 		self.reloj.tick(self.FPS)
