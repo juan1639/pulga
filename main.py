@@ -58,7 +58,7 @@ class Game:
 		self.scrollImg2 = pygame.image.load('./assets/img/scrollBg2.png').convert()
 
 		self.SCROLL_THRESH = 200
-		self.scroll = 2
+		self.scroll = 0
 		self.bgScroll = 0
 
 		self.sonido_salto = pygame.mixer.Sound("./assets/sound/jumpbros.ogg")
@@ -83,6 +83,13 @@ class Game:
 		self.nivel = 1
 		self.vidas = 3
 
+		# Suelo (1ra plataforma)
+		y = self.FILAS - 1
+		self.plataforma = Plataforma(self, 0, y, self.COLUMNAS, 0, self.TX, self.TY, (self.TX, self.TY))
+		self.lista_spritesAdibujar.add(self.plataforma)
+		self.lista_plataformas.add(self.plataforma)
+		self.contadorPlataformas += 1
+
 
 	def reInstanciasPlataformas(self):
 		# Reinstancias Plataformas ------------------------------
@@ -100,7 +107,7 @@ class Game:
 
 	def dibujaScroll(self):
 		resY = self.RESOLUCION[1]
-		self.bgScroll += self.scroll * 2
+		self.bgScroll += self.scroll
 
 		if self.bgScroll >= resY * 2:
 			self.bgScroll = 0
@@ -108,13 +115,15 @@ class Game:
 		self.pantalla.blit(self.scrollImg1, (0, 0 + self.bgScroll))
 		self.pantalla.blit(self.scrollImg2, (0, -resY + self.bgScroll))
 		self.pantalla.blit(self.scrollImg1, (0, -resY * 2 + self.bgScroll))
-		self.pantalla.blit(self.scrollImg2, (0, -resY * 3 + self.bgScroll))
 
 
 	def update(self):
 		pygame.display.set_caption(str(int(self.reloj.get_fps())))
 		
 		self.dibujaScroll()
+
+		self.lista_spritesAdibujar.update()
+		self.lista_spritesAdibujar.draw(self.pantalla)
 		
 		pygame.display.flip()
 		self.reloj.tick(self.FPS)
