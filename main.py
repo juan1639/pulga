@@ -58,7 +58,7 @@ class Game:
 		self.scrollImg2 = pygame.image.load('./assets/img/scrollBg2.png').convert()
 
 		self.SCROLL_THRESH = 200
-		self.scroll = 0
+		self.scroll = 2
 		self.bgScroll = 0
 
 		self.sonido_salto = pygame.mixer.Sound("./assets/sound/jumpbros.ogg")
@@ -93,7 +93,36 @@ class Game:
 
 	def reInstanciasPlataformas(self):
 		# Reinstancias Plataformas ------------------------------
-		pass
+		cont = self.contadorPlataformas
+		topP = self.PLATAFORMAS_LEVEL_UP + self.nivel * 4
+
+		if len(self.lista_plataformas) < self.MAX_PLATAFORMAS and cont < topP:
+			self.contadorPlataformas += 1
+
+			if self.contadorPlataformas == topP:
+				ancho = self.COLUMNAS
+				x = 0
+			else:
+				x = random.randrange(self.COLUMNAS - 2)
+
+				if self.nivel < 9:
+					valor = self.anchoPlataf_nivel[self.nivel - 1]
+					ancho = random.randrange(valor[0], valor[1])
+				else:
+					ancho = random.randrange(2, 3)
+
+			ultimaPlataforma = self.plataforma.rect.y // self.TY 
+			espacioEntrePlataformas = random.randrange(2) + 2
+			y = ultimaPlataforma - espacioEntrePlataformas
+
+			if self.contadorPlataformas == topP:
+				self.pulga.plataformaMETA = y 
+
+			velX_rnd = 0 
+
+			self.plataforma = Plataforma(self, x, y, ancho, velX_rnd, self.TX, self.TY, (self.TX, self.TY))
+			self.lista_spritesAdibujar.add(self.plataforma)
+			self.lista_plataformas.add(self.plataforma)
 
 
 	def obtenerGrafico(self, nombrePng, escala):
@@ -119,6 +148,8 @@ class Game:
 
 	def update(self):
 		pygame.display.set_caption(str(int(self.reloj.get_fps())))
+
+		self.reInstanciasPlataformas()
 		
 		self.dibujaScroll()
 
