@@ -58,7 +58,7 @@ class Game:
 		self.scrollImg2 = pygame.image.load('./assets/img/scrollBg2.png').convert()
 
 		self.SCROLL_THRESH = 200
-		self.scroll = 2
+		self.scroll = 0
 		self.bgScroll = 0
 
 		self.sonido_salto = pygame.mixer.Sound("./assets/sound/jumpbros.ogg")
@@ -82,6 +82,10 @@ class Game:
 		self.puntos = 0
 		self.nivel = 1
 		self.vidas = 3
+
+		x = self.RESOLUCION[0] // 2
+		y = self.RESOLUCION[1] - self.TY * 3 
+		self.pulga = Pulga(self, x, y, self.TX, self.TY, (40, 40))
 
 		# Suelo (1ra plataforma)
 		y = self.FILAS - 1
@@ -150,11 +154,14 @@ class Game:
 		pygame.display.set_caption(str(int(self.reloj.get_fps())))
 
 		self.reInstanciasPlataformas()
-		
+
+		self.scroll = self.pulga.actualiza()
 		self.dibujaScroll()
 
 		self.lista_spritesAdibujar.update()
 		self.lista_spritesAdibujar.draw(self.pantalla)
+
+		self.pulga.dibuja(self.pantalla)
 		
 		pygame.display.flip()
 		self.reloj.tick(self.FPS)
