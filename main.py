@@ -120,7 +120,7 @@ class Game:
 			y = ultimaPlataforma - espacioEntrePlataformas
 
 			if self.contadorPlataformas == topP:
-				self.pulga.plataformaMETA = y 
+				self.pulga.PlataformaMETA = y 
 
 			velX_rnd = 0 
 

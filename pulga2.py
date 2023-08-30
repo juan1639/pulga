@@ -54,10 +54,10 @@ class Pulga():
 		self.velY += self.game.GRAVEDAD
 		dy += self.velY
 
-		#dx = self.checkLimitesHor(dx)
-		#dy = self.checkColisionPlataformas(dy)
-		#dy = self.checkCaerAlVacio(dy)
-		#self.checkColisionPlataformaMETA()
+		dx = self.checkLimitesHor(dx)
+		dy = self.checkColisionPlataformas(dy)
+		dy = self.checkCaerAlVacio(dy)
+		self.checkColisionPlataformaMETA()
 		scroll = self.checkScrollThresh(scroll, dy)
 
 		self.rect.x += dx
@@ -84,6 +84,46 @@ class Pulga():
 				scroll = -dy 
 
 		return scroll
+
+
+	def checkColisionPlataformas(self, dy):
+		for plataf in self.game.lista_plataformas:
+			if plataf.rect.colliderect(self.rect.x, self.rect.y + dy, self.rect.width, self.rect.height):
+				if self.rect.bottom < plataf.rect.centery:
+					if self.velY > 0:
+						self.rect.bottom = plataf.rect.top
+						dy = 0
+						self.velY = -20
+						self.game.sonido_salto.play()
+
+		return dy 
+
+
+	def checkCaerAlVacio(self, dy):
+		if self.rect.bottom + dy > self.game.RESOLUCION[1] * 1.5:
+			dy = 0
+			self.game.gameOver = True
+			self.game.enJuego = False
+			self.game.sonido_gameOver.play()
+
+		return dy
+
+
+	def checkLimitesHor(self, dx):
+		if self.rect.left + dx < 0:
+			dx = -self.rect.left 
+
+		if self.rect.right + dx > self.game.RESOLUCION[0]:
+			dx = self.game.RESOLUCION[0] - self.rect.right 
+
+		return dx
+
+
+	def checkColisionPlataformaMETA(self):
+		if self.rect.bottom <= self.PlataformaMETA and not self.game.nivelSuperado:
+			self.game.nivelSuperado = True
+			self.game.sonido_pacIntermision.play()
+			print('nivel superado!')
 
 
 	def leerTeclado(self, dx):
